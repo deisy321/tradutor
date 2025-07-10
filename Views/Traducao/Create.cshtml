@@ -1,0 +1,28 @@
+@model Tradutor.Models.Traducao
+
+<h2>Adicionar Tradução</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.IdiomaId)
+        @Html.DropDownListFor(m => m.IdiomaId, (SelectList)ViewBag.IdiomaId, "Selecione o idioma", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.IdiomaId)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.TextoOriginal)
+        @Html.TextBoxFor(m => m.TextoOriginal, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.TextoOriginal)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.TextoTraduzido)
+        @Html.TextBoxFor(m => m.TextoTraduzido, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.TextoTraduzido)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Tradução</button>
+}

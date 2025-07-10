@@ -1,0 +1,70 @@
+@model Tradutor.Models.Idioma
+
+@{
+    ViewBag.Title = "Adicionar Idioma";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Codigo)
+        @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control", placeholder = "Ex: en, pt, fr" })
+        @Html.ValidationMessageFor(m => m.Codigo)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Descricao)
+        @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control", placeholder = "Ex: Inglês, Português" })
+        @Html.ValidationMessageFor(m => m.Descricao)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.BandeiraUrl)
+        @Html.TextBoxFor(m => m.BandeiraUrl, new
+        {
+            @class = "form-control",
+            placeholder = "Cole aqui a URL da imagem da bandeira",
+            oninput = "mostrarPreview(this.value)"
+        })
+        @Html.ValidationMessageFor(m => m.BandeiraUrl)
+        <small class="form-text text-muted">Informe a URL completa da imagem da bandeira (ex: https://...png)</small>
+    </div>
+
+    <div id="previewBandeira" style="margin-bottom: 15px;">
+        <!-- Pré-visualização da bandeira aparece aqui -->
+    </div>
+
+    <input type="submit" value="Salvar Idioma" class="btn btn-primary" />
+}
+
+@if (Request.QueryString["idiomaId"] != null)
+{
+    <hr />
+    <button id="btnAdicionarTraducao" class="btn btn-success">Adicionar Tradução</button>
+
+    <div id="formTraducao" style="display:none; margin-top:20px;">
+        @Html.Partial("_FormTraducao", new Tradutor.Models.Traducao { IdiomaId = int.Parse(Request.QueryString["idiomaId"]) })
+    </div>
+
+    <script>
+        document.getElementById("btnAdicionarTraducao").addEventListener("click", function () {
+            var form = document.getElementById("formTraducao");
+            form.style.display = (form.style.display === "none") ? "block" : "none";
+        });
+    </script>
+}
+
+<script>
+    function mostrarPreview(url) {
+        const div = document.getElementById("previewBandeira");
+        if (url && (url.startsWith("http") || url.startsWith("/"))) {
+            div.innerHTML = '<label>Pré-visualização:</label><br><img src="' + url + '" width="60" height="40" style="border:1px solid #ccc;" />';
+        } else {
+            div.innerHTML = '';
+        }
+    }
+</script>

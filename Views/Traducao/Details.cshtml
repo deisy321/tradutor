@@ -1,0 +1,26 @@
+@model Tradutor.Models.Traducao
+@{
+    ViewBag.Title = "Detalhes da Tradução";
+}
+
+<h2>Detalhes da Tradução</h2>
+
+<div>
+    <h4>Tradução</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Idioma</dt>
+        <dd>@Model.Idioma.Descricao</dd>
+
+        <dt>Texto Original</dt>
+        <dd>@Model.TextoOriginal</dd>
+
+        <dt>Texto Traduzido</dt>
+        <dd>@Model.TextoTraduzido</dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-default" })
+</p>

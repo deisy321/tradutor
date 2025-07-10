@@ -1,0 +1,40 @@
+@model Tradutor.Models.Idioma
+
+@{
+    ViewBag.Title = "Excluir Idioma";
+}
+
+<h2>Excluir Idioma</h2>
+
+<h3>Tem certeza que deseja excluir este idioma?</h3>
+<div>
+    <h4>Idioma</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Codigo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BandeiraUrl)  @* Corrigido de Bandeira para BandeiraUrl *@
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BandeiraUrl)    @* Corrigido de Bandeira para BandeiraUrl *@
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <input type="submit" value="Excluir" class="btn btn-danger" /> @:|
+        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+    }
+</div>

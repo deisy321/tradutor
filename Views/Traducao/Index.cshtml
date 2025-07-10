@@ -1,0 +1,42 @@
+@model IEnumerable<Tradutor.Models.Traducao>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2>Lista de Traduções</h2>
+
+    <table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Idioma</th>
+                <th>Texto Original</th>
+                <th>Texto Traduzido</th>
+                <th style="width: 180px;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Idioma.Descricao</td>
+                    <td>@item.TextoOriginal</td>
+                    <td>@item.TextoTraduzido</td>
+                    <td>
+                        <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-info btn-sm me-1" title="Detalhes">
+                            <i class="bi bi-eye"></i> Detalhes
+                        </a>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-sm me-1" title="Editar">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-sm" title="Excluir">
+                            <i class="bi bi-trash"></i> Excluir
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Ícones Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
