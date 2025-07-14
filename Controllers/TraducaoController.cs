@@ -1,17 +1,26 @@
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Tradutor.DAL;
 using Tradutor.Models;
+using System.Collections.Generic;
 
 namespace Tradutor.Controllers
 {
-    public class TraducaoController : BaseController
+    public class TraducaoController : Controller
     {
+        // Declarar contexto do banco
+        private readonly AppDbContext db = new AppDbContext();
+
         // GET: Traducao
         public ActionResult Index()
         {
-            var traducoes = db.Traducoes.Include(t => t.Idioma).OrderBy(t => t.Idioma.Descricao).ThenBy(t => t.TextoOriginal).ToList();
+            var traducoes = db.Traducoes.Include(t => t.Idioma)
+                .OrderBy(t => t.Idioma.Descricao)
+                .ThenBy(t => t.TextoOriginal)
+                .ToList();
             return View(traducoes);
         }
 
@@ -19,9 +28,7 @@ namespace Tradutor.Controllers
         public ActionResult Create(int? idiomaId)
         {
             if (idiomaId == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
 
             ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", idiomaId);
             var traducao = new Traducao { IdiomaId = idiomaId.Value };
@@ -31,17 +38,50 @@ namespace Tradutor.Controllers
         // POST: Traducao/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Traducao traducao)
+        public ActionResult Create(int IdiomaId, string TextoOriginal, string TextoTraduzido)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(TextoOriginal))
             {
-                db.Traducoes.Add(traducao);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                ModelState.AddModelError("TextoOriginal", "Por favor, insira pelo menos uma palavra ou frase.");
             }
 
-            ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", traducao.IdiomaId);
-            return View(traducao);
+            if (string.IsNullOrWhiteSpace(TextoTraduzido))
+            {
+                ModelState.AddModelError("TextoTraduzido", "Por favor, insira as traduções correspondentes.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", IdiomaId);
+                return View();
+            }
+
+            // Separar as linhas em arrays
+            var linhasOriginais = TextoOriginal.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var linhasTraduzidas = TextoTraduzido.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (linhasOriginais.Length != linhasTraduzidas.Length)
+            {
+                ModelState.AddModelError("", "O número de frases originais e traduções deve ser igual.");
+                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", IdiomaId);
+                return View();
+            }
+
+            for (int i = 0; i < linhasOriginais.Length; i++)
+            {
+                var traducao = new Traducao
+                {
+                    IdiomaId = IdiomaId,
+                    TextoOriginal = linhasOriginais[i].Trim(),
+                    TextoTraduzido = linhasTraduzidas[i].Trim()
+                };
+
+                db.Traducoes.Add(traducao);
+            }
+
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // GET: Traducao/Edit/5
@@ -69,6 +109,7 @@ namespace Tradutor.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", traducao.IdiomaId);
             return View(traducao);
         }
@@ -97,19 +138,61 @@ namespace Tradutor.Controllers
             return RedirectToAction("Index");
         }
 
-
-        // (Opcional) GET: Traducao/Details/5
+        // GET: Traducao/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             var traducao = db.Traducoes.Include(t => t.Idioma).FirstOrDefault(t => t.Id == id);
-
             if (traducao == null)
                 return HttpNotFound();
 
             return View(traducao);
+        }
+
+        // ------------------------------
+        // NOVO MÉTODO: Traduz frase/palavra(s) usando o banco
+        // Pode ser usado via Ajax ou diretamente em outra action
+        // ------------------------------
+        [HttpPost]
+        public JsonResult TraduzirFrase(string frase, int idiomaId)
+        {
+            if (string.IsNullOrWhiteSpace(frase))
+                return Json(new { sucesso = false, mensagem = "Frase vazia." });
+
+            // Busca tradução da frase inteira
+            var traducaoFrase = db.Traducoes
+                .FirstOrDefault(t => t.TextoOriginal == frase && t.IdiomaId == idiomaId);
+
+            if (traducaoFrase != null)
+            {
+                return Json(new { sucesso = true, traducao = traducaoFrase.TextoTraduzido });
+            }
+
+            // Se não achou frase inteira, traduz palavra por palavra
+            var palavras = frase.Split(' ');
+            List<string> palavrasTraduzidas = new List<string>();
+
+            foreach (var palavra in palavras)
+            {
+                var traducaoPalavra = db.Traducoes
+                    .FirstOrDefault(t => t.TextoOriginal == palavra && t.IdiomaId == idiomaId);
+
+                palavrasTraduzidas.Add(traducaoPalavra != null ? traducaoPalavra.TextoTraduzido : palavra);
+            }
+
+            var resultado = string.Join(" ", palavrasTraduzidas);
+            return Json(new { sucesso = true, traducao = resultado });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

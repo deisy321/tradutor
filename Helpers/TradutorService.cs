@@ -1,34 +1,41 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Caching;
+﻿using System.Linq;
+using Tradutor.DAL;  // ajuste para o namespace do seu contexto
+using System.Collections.Generic;
 
-namespace Tradutor.Helpers
+namespace Tradutor.Services
 {
-    public static class TradutorService
+    public class TradutorService
     {
-        public static async Task<string> TraduzirTexto(string texto, string idiomaDestino)
+        private readonly AppDbContext _db;
+
+        public TradutorService()
         {
-            string cacheKey = $"traducao_{texto}_{idiomaDestino}";
-            var cache = HttpRuntime.Cache;
+            _db = new AppDbContext();
+        }
 
-            if (cache[cacheKey] != null)
-                return (string)cache[cacheKey];
+        public string TraduzirFrase(string fraseOriginal, int idiomaId)
+        {
+            // Tenta traduzir a frase inteira
+            var traducaoFrase = _db.Traducoes
+                .FirstOrDefault(t => t.TextoOriginal == fraseOriginal && t.IdiomaId == idiomaId);
 
-            using (var client = new HttpClient())
+            if (traducaoFrase != null)
+                return traducaoFrase.TextoTraduzido;
+
+            // Se não encontrar a frase, tenta traduzir palavra por palavra
+            var palavras = fraseOriginal.Split(' ');
+
+            List<string> palavrasTraduzidas = new List<string>();
+
+            foreach (var palavra in palavras)
             {
-                string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={idiomaDestino}&dt=t&q={HttpUtility.UrlEncode(texto)}";
+                var traducaoPalavra = _db.Traducoes
+                    .FirstOrDefault(t => t.TextoOriginal == palavra && t.IdiomaId == idiomaId);
 
-                var response = await client.GetStringAsync(url);
-
-                // A resposta é algo como: [[[\"Hello\",\"Olá\",...]]]
-                var traducao = response.Split('"')[1];
-
-                cache.Insert(cacheKey, traducao, null, DateTime.Now.AddHours(1), Cache.NoSlidingExpiration);
-
-                return traducao;
+                palavrasTraduzidas.Add(traducaoPalavra != null ? traducaoPalavra.TextoTraduzido : palavra);
             }
+
+            return string.Join(" ", palavrasTraduzidas);
         }
     }
 }

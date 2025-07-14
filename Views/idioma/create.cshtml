@@ -1,4 +1,4 @@
-@model Tradutor.Models.Idioma
+ï»¿@model Tradutor.Models.Idioma
 
 @{
     ViewBag.Title = "Adicionar Idioma";
@@ -18,7 +18,7 @@
 
     <div class="form-group">
         @Html.LabelFor(m => m.Descricao)
-        @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control", placeholder = "Ex: Inglês, Português" })
+        @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control", placeholder = "Ex: InglÃªs, PortuguÃªs" })
         @Html.ValidationMessageFor(m => m.Descricao)
     </div>
 
@@ -35,7 +35,7 @@
     </div>
 
     <div id="previewBandeira" style="margin-bottom: 15px;">
-        <!-- Pré-visualização da bandeira aparece aqui -->
+        <!-- Prï¿½-visualizaï¿½ï¿½o da bandeira aparece aqui -->
     </div>
 
     <input type="submit" value="Salvar Idioma" class="btn btn-primary" />
@@ -44,7 +44,7 @@
 @if (Request.QueryString["idiomaId"] != null)
 {
     <hr />
-    <button id="btnAdicionarTraducao" class="btn btn-success">Adicionar Tradução</button>
+    <button id="btnAdicionarTraducao" class="btn btn-success">Adicionar Traduï¿½ï¿½o</button>
 
     <div id="formTraducao" style="display:none; margin-top:20px;">
         @Html.Partial("_FormTraducao", new Tradutor.Models.Traducao { IdiomaId = int.Parse(Request.QueryString["idiomaId"]) })
@@ -62,7 +62,7 @@
     function mostrarPreview(url) {
         const div = document.getElementById("previewBandeira");
         if (url && (url.startsWith("http") || url.startsWith("/"))) {
-            div.innerHTML = '<label>Pré-visualização:</label><br><img src="' + url + '" width="60" height="40" style="border:1px solid #ccc;" />';
+            div.innerHTML = '<label>Prï¿½-visualizaï¿½ï¿½o:</label><br><img src="' + url + '" width="60" height="40" style="border:1px solid #ccc;" />';
         } else {
             div.innerHTML = '';
         }

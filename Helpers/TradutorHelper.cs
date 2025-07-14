@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Web;
 using Tradutor.DAL;
-using Tradutor.Models;
 
 namespace Tradutor.Helpers
 {
@@ -17,16 +16,27 @@ namespace Tradutor.Helpers
         // Usa idioma passado como parâmetro
         public static string Traduzir(string textoOriginal, string idiomaCodigo)
         {
+            if (string.IsNullOrWhiteSpace(textoOriginal))
+                return textoOriginal;
+
             using (var db = new AppDbContext())
             {
-                var traducao = db.Traducoes
-                    .FirstOrDefault(t => t.TextoOriginal == textoOriginal && t.Idioma.Codigo == idiomaCodigo);
+                var palavras = textoOriginal.Split(' ');
 
-                if (traducao != null)
-                    return traducao.TextoTraduzido;
+                for (int i = 0; i < palavras.Length; i++)
+                {
+                    var palavra = palavras[i].Trim().ToLower();
 
-                // 🔴 NÃO faz chamada à API externa. Apenas retorna o original.
-                return textoOriginal;
+                    var traducao = db.Traducoes
+                        .FirstOrDefault(t =>
+                            t.TextoOriginal.ToLower() == palavra &&
+                            t.Idioma.Codigo == idiomaCodigo);
+
+                    if (traducao != null)
+                        palavras[i] = traducao.TextoTraduzido;
+                }
+
+                return string.Join(" ", palavras);
             }
         }
     }

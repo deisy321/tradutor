@@ -1,4 +1,4 @@
-namespace Tradutor.Models
+ï»¿namespace Tradutor.Models
 {
     public class Traducao
     {
@@ -11,7 +11,7 @@ namespace Tradutor.Models
         // FK para Idioma
         public int IdiomaId { get; set; }
 
-        // Propriedade de navegação para carregar o idioma associado
+        // Propriedade de navegaï¿½ï¿½o para carregar o idioma associado
         public virtual Idioma Idioma { get; set; }
     }
 }

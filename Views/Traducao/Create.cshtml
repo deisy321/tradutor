@@ -1,6 +1,6 @@
-@model Tradutor.Models.Traducao
+﻿@model Tradutor.Models.Traducao
 
-<h2>Adicionar Tradu��o</h2>
+<h2>Adicionar Traduções</h2>
 
 @using (Html.BeginForm())
 {
@@ -13,16 +13,16 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.TextoOriginal)
-        @Html.TextBoxFor(m => m.TextoOriginal, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.TextoOriginal)
+        @Html.Label("TextoOriginal", "Frases ou palavras (uma por linha)")
+        <textarea name="TextoOriginal" class="form-control" rows="5" placeholder="Digite uma palavra ou frase por linha"></textarea>
+        @Html.ValidationMessage("TextoOriginal")
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.TextoTraduzido)
-        @Html.TextBoxFor(m => m.TextoTraduzido, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.TextoTraduzido)
+        @Html.Label("TextoTraduzido", "Traduções correspondentes (uma por linha)")
+        <textarea name="TextoTraduzido" class="form-control" rows="5" placeholder="Digite a tradução correspondente para cada frase original, na mesma ordem"></textarea>
+        @Html.ValidationMessage("TextoTraduzido")
     </div>
 
-    <button type="submit" class="btn btn-primary">Salvar Tradu��o</button>
+    <button type="submit" class="btn btn-primary">Salvar Traduções</button>
 }

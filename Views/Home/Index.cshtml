@@ -5,8 +5,8 @@
     string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
 }
 
-<h2>@Tradutor.Helpers.TradutorHelper.Traduzir("bem vindo", idioma)</h2>
+<h2>@Tradutor.Helpers.TradutorHelper.Traduzir("bem vindo ao sistema ", idioma)</h2>
 
-<p>@Tradutor.Helpers.TradutorHelper.Traduzir("bom dia", idioma)</p>
+<p>@Tradutor.Helpers.TradutorHelper.Traduzir("bom dia como estas ?", idioma)</p>
 
 <p>@Tradutor.Helpers.TradutorHelper.Traduzir("obrigada", idioma)</p>
