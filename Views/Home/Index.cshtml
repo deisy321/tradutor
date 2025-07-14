@@ -1,8 +1,12 @@
-﻿@using Tradutor.Helpers
-@{
+﻿@{
     ViewBag.Title = "Página Inicial";
-    var idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "en";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
 }
 
-<h2>@TradutorHelper.Traduzir("Bem-vindo ao sistema!", idioma)</h2>
-<p>@TradutorHelper.Traduzir("Esta página demonstra a tradução automática com base no idioma escolhido.", idioma)</p>
+<h2>@Tradutor.Helpers.TradutorHelper.Traduzir("bem vindo", idioma)</h2>
+
+<p>@Tradutor.Helpers.TradutorHelper.Traduzir("bom dia", idioma)</p>
+
+<p>@Tradutor.Helpers.TradutorHelper.Traduzir("obrigada", idioma)</p>

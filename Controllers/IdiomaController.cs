@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using Tradutor.DAL;
 using Tradutor.Models;
@@ -94,9 +95,19 @@ namespace Tradutor.Controllers
         {
             if (!string.IsNullOrEmpty(lang))
             {
+                // Atualiza a sessão com o idioma escolhido
                 Session["Idioma"] = lang;
+
+                // Cria ou atualiza o cookie _lang com validade de 1 ano
+                HttpCookie cookie = new HttpCookie("_lang", lang)
+                {
+                    Expires = System.DateTime.Now.AddYears(1),
+                    HttpOnly = true
+                };
+                Response.Cookies.Add(cookie);
             }
 
+            // Se returnUrl não for seguro, redireciona para home
             if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
             {
                 returnUrl = Url.Action("Index", "Home");

@@ -1,11 +1,14 @@
 ﻿@using Tradutor.Models
 @{
     var idiomas = ViewBag.IdiomasCompletos as List<Idioma> ?? new List<Idioma>();
-    var idiomaAtual = (Session["Idioma"]?.ToString() ?? "en").ToLower();
+    var idiomaAtual = (Session["Idioma"]?.ToString() ?? "pt").ToLower();
     var idiomaAtualObj = idiomas.FirstOrDefault(i => i.Codigo.ToLower() == idiomaAtual);
     var idiomaAtualHtml = idiomaAtualObj != null
         ? $"<img src='{idiomaAtualObj.BandeiraUrl}' alt='{idiomaAtualObj.Descricao}' style='width:24px; height:16px; margin-right:5px;' /> {idiomaAtualObj.Descricao}"
         : "<span class='fi fi-world'></span> Idioma";
+
+    // Função local para traduzir
+    Func<string, string> Traduzir = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idiomaAtual);
 }
 
 <!DOCTYPE html>
@@ -13,7 +16,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - Meu Aplicativo ASP.NET</title>
+    <title>@Traduzir(ViewBag.Title ?? "Meu Aplicativo ASP.NET")</title>
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -25,7 +28,7 @@
 <body>
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container">
-            @Html.ActionLink("Nome do aplicativo", "Index", "Home", null, new { @class = "navbar-brand" })
+            @Html.ActionLink(Traduzir("Tradutor "), "Index", "Home", null, new { @class = "navbar-brand" })
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -49,14 +52,13 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Traduções ", "Index", "Traducao", null, new { @class = "nav-link" })
-                    </li>
-
-                    <li class="nav-item">
-                        @Html.ActionLink("Idiomas Cadastrados", "Index", "Idioma", null, new { @class = "nav-link" })
+                        @Html.ActionLink(Traduzir("Traduções"), "Index", "Traducao", null, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Adicionar Idioma", "Create", "Idioma", null, new { @class = "nav-link" })
+                        @Html.ActionLink(Traduzir("Idiomas Cadastrados"), "Index", "Idioma", null, new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(Traduzir("Adicionar Idioma"), "Create", "Idioma", null, new { @class = "nav-link" })
                     </li>
                 </ul>
             </div>
@@ -67,7 +69,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p class="traduzir">&copy; @DateTime.Now.Year - Meu Aplicativo ASP.NET</p>
+            <p>&copy; @DateTime.Now.Year - @Traduzir("Meu Aplicativo ASP.NET")</p>
         </footer>
     </div>
 
@@ -75,41 +77,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("scripts", required: false)
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const idioma = '@(Session["Idioma"] ?? "en")'.toLowerCase();
-
-            const elementos = document.querySelectorAll(".traduzir");
-            let textosOriginais = [];
-
-            elementos.forEach(e => {
-                if (e.children.length === 0 && e.innerText.trim() !== "") {
-                    textosOriginais.push(e.innerText.trim());
-                }
-            });
-
-            textosOriginais = [...new Set(textosOriginais)];
-
-            if (!["pt", "pt-pt"].includes(idioma)) {
-                for (const texto of textosOriginais) {
-                    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl=${idioma}&dt=t&q=${encodeURIComponent(texto)}`;
-                    try {
-                        const res = await fetch(url);
-                        const data = await res.json();
-                        const traducao = data[0][0][0];
-
-                        elementos.forEach(e => {
-                            if (e.children.length === 0 && e.innerText.trim() === texto) {
-                                e.innerText = traducao;
-                            }
-                        });
-                    } catch (err) {
-                        console.error("Erro ao traduzir:", texto, err);
-                    }
-                }
-            }
-        });
-    </script>
 </body>
 </html>

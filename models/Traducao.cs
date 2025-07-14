@@ -4,10 +4,14 @@ namespace Tradutor.Models
     {
         public int Id { get; set; }
 
-        public int IdiomaId { get; set; }           // FK para o idioma
-        public string TextoOriginal { get; set; }   // texto em PT (ou texto base)
-        public string TextoTraduzido { get; set; }  // texto traduzido no idioma
+        public string TextoOriginal { get; set; }
 
-        public virtual Idioma Idioma { get; set; }  // relacionamento
+        public string TextoTraduzido { get; set; }
+
+        // FK para Idioma
+        public int IdiomaId { get; set; }
+
+        // Propriedade de navegação para carregar o idioma associado
+        public virtual Idioma Idioma { get; set; }
     }
 }

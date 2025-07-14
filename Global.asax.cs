@@ -18,6 +18,9 @@ namespace tradutor
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
+            if (HttpContext.Current.Session == null)
+                return; // Sessão não iniciada ainda
+
             string idiomaSelecionado = null;
 
             HttpCookie cookie = HttpContext.Current.Request.Cookies["_lang"];
@@ -34,7 +37,7 @@ namespace tradutor
                 }
             }
 
-            HttpContext.Current.Session["Idioma"] = idiomaSelecionado ?? "en";
+            HttpContext.Current.Session["Idioma"] = idiomaSelecionado ?? "pt";
         }
     }
 }
