@@ -2,11 +2,9 @@
     ViewBag.Title = "Página Inicial";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
+    var idioma = Session["Idioma"]?.ToString()?.ToLower() ?? "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
 }
 
-<h2>@Tradutor.Helpers.TradutorHelper.Traduzir("bem vindo ao sistema ", idioma)</h2>
-
-<p>@Tradutor.Helpers.TradutorHelper.Traduzir("bom dia como estas ?", idioma)</p>
-
-<p>@Tradutor.Helpers.TradutorHelper.Traduzir("obrigada", idioma)</p>
+<h2>@T("Seja bem-vindo ao sistema")</h2>
+<p>@T("Obrigado")</p>

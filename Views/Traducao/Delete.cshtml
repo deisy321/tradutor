@@ -1,30 +1,35 @@
 @model Tradutor.Models.Traducao
+
 @{
-    ViewBag.Title = "Excluir Tradução";
+    // Corrigido: usando string ao invés de int
+    string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+
+    ViewBag.Title = T("Excluir Tradução");
 }
 
-<h2>Excluir Tradução</h2>
+<h2>@T("Excluir Tradução")</h2>
 
-<h3>Tem certeza que deseja excluir esta tradução?</h3>
+<h3>@T("Tem certeza que deseja excluir esta tradução?")</h3>
 
 <div>
-    <h4>Tradução</h4>
+    <h4>@T("Tradução")</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Idioma</dt>
+        <dt>@T("Idioma")</dt>
         <dd>@Model.Idioma.Descricao</dd>
 
-        <dt>Texto Original</dt>
+        <dt>@T("Texto Original")</dt>
         <dd>@Model.TextoOriginal</dd>
 
-        <dt>Texto Traduzido</dt>
+        <dt>@T("Texto Traduzido")</dt>
         <dd>@Model.TextoTraduzido</dd>
     </dl>
 
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        <input type="submit" value="Excluir" class="btn btn-danger" />
-        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+        <input type="submit" value="@T("Excluir")" class="btn btn-danger" />
+        @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-default" })
     }
 </div>

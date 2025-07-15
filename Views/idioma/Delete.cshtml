@@ -1,40 +1,35 @@
 @model Tradutor.Models.Idioma
 
 @{
-    ViewBag.Title = "Excluir Idioma";
+    string idioma = Session["Idioma"]?.ToString() ?? "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+
+    ViewBag.Title = T("Excluir Idioma");
 }
 
-<h2>Excluir Idioma</h2>
+<h2>@T("Excluir Idioma")</h2>
 
-<h3>Tem certeza que deseja excluir este idioma?</h3>
+<h3>@T("Tem certeza que deseja excluir este idioma?")</h3>
 <div>
-    <h4>Idioma</h4>
+    <h4>@T("Idioma")</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Codigo)
-        </dt>
+        <dt>@T("Código")</dt>
+        <dd>@Html.DisplayFor(model => model.Codigo)</dd>
+
+        <dt>@T("Descrição")</dt>
+        <dd>@Html.DisplayFor(model => model.Descricao)</dd>
+
+        <dt>@T("Bandeira")</dt>
         <dd>
-            @Html.DisplayFor(model => model.Codigo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.BandeiraUrl)  @* Corrigido de Bandeira para BandeiraUrl *@
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.BandeiraUrl)    @* Corrigido de Bandeira para BandeiraUrl *@
+            <img src="@Model.BandeiraUrl" alt="@Model.Descricao" style="width: 40px;" />
         </dd>
     </dl>
 
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        <input type="submit" value="Excluir" class="btn btn-danger" /> @:|
-        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+        <input type="submit" value="@T("Excluir")" class="btn btn-danger" />
+        @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-default ms-2" })
     }
 </div>

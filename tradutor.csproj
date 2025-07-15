@@ -151,6 +151,7 @@
     <Content Include="Views\Traducao\Edit.cshtml" />
     <Content Include="Views\Traducao\Delete.cshtml" />
     <Content Include="Views\Traducao\Details.cshtml" />
+    <Content Include="Views\Traducao\Gerenciar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

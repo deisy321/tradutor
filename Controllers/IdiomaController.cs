@@ -14,7 +14,6 @@ namespace Tradutor.Controllers
         // GET: Idioma
         public ActionResult Index()
         {
-            // Busca apenas os idiomas que estão no banco de dados
             var idiomasDoBanco = db.Idiomas.ToList();
             return View(idiomasDoBanco);
         }
@@ -32,6 +31,13 @@ namespace Tradutor.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool existe = db.Idiomas.Any(i => i.Codigo.ToLower() == idioma.Codigo.ToLower());
+                if (existe)
+                {
+                    ModelState.AddModelError("Codigo", "Idioma já cadastrado com este código.");
+                    return View(idioma);
+                }
+
                 db.Idiomas.Add(idioma);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -52,19 +58,41 @@ namespace Tradutor.Controllers
             return View(idioma);
         }
 
-        // POST: Idioma/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Idioma idioma)
         {
+            // Validação: verifica se já existe outro idioma com o mesmo código (ignorando o atual)
+            bool existe = db.Idiomas.Any(i => i.Codigo.ToLower() == idioma.Codigo.ToLower() && i.Id != idioma.Id);
+            if (existe)
+            {
+                ModelState.AddModelError("Codigo", "Já existe outro idioma com este código.");
+                return View(idioma);
+            }
+
             if (ModelState.IsValid)
             {
-                db.Entry(idioma).State = EntityState.Modified;
+                // Busca o objeto original no banco pelo Id
+                var idiomaOriginal = db.Idiomas.Find(idioma.Id);
+                if (idiomaOriginal == null)
+                {
+                    return HttpNotFound();
+                }
+
+                // Atualiza as propriedades do objeto original
+                idiomaOriginal.Codigo = idioma.Codigo;
+                idiomaOriginal.Descricao = idioma.Descricao;
+                idiomaOriginal.BandeiraUrl = idioma.BandeiraUrl;
+
+                // Salva alterações no banco
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
+
             return View(idioma);
         }
+
 
         // GET: Idioma/Delete/5
         public ActionResult Delete(int? id)
@@ -95,10 +123,8 @@ namespace Tradutor.Controllers
         {
             if (!string.IsNullOrEmpty(lang))
             {
-                // Atualiza a sessão com o idioma escolhido
                 Session["Idioma"] = lang;
 
-                // Cria ou atualiza o cookie _lang com validade de 1 ano
                 HttpCookie cookie = new HttpCookie("_lang", lang)
                 {
                     Expires = System.DateTime.Now.AddYears(1),
@@ -107,7 +133,6 @@ namespace Tradutor.Controllers
                 Response.Cookies.Add(cookie);
             }
 
-            // Se returnUrl não for seguro, redireciona para home
             if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
             {
                 returnUrl = Url.Action("Index", "Home");

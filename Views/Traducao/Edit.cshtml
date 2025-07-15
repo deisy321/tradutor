@@ -1,9 +1,13 @@
 @model Tradutor.Models.Traducao
+
 @{
-    ViewBag.Title = "Editar Tradução";
+    string idioma = Session["Idioma"]?.ToString() ?? "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+
+    ViewBag.Title = T("Editar Tradução");
 }
 
-<h2>Editar Tradução</h2>
+<h2>@T("Editar Tradução")</h2>
 
 @using (Html.BeginForm())
 {
@@ -16,31 +20,32 @@
         @Html.ValidationSummary(true)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IdiomaId, "Idioma", htmlAttributes: new { @class = "control-label col-md-2" })
+            <label for="IdiomaId" class="control-label col-md-2">@T("Idioma")</label>
             <div class="col-md-10">
-                @Html.DropDownList("IdiomaId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.IdiomaId, (SelectList)ViewBag.IdiomaId, T("Selecione o idioma"), new { @class = "form-control" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.TextoOriginal, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.TextoOriginal, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.TextoOriginal, new { @class = "form-control", placeholder = T("Digite o texto original") })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.TextoTraduzido, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.TextoTraduzido, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.TextoTraduzido, new { @class = "form-control", placeholder = T("Digite o texto traduzido") })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Salvar Alterações" class="btn btn-primary" />
-                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+                <input type="submit" value="@T("Salvar Alterações")" class="btn btn-primary" />
+                @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
 }
+ 

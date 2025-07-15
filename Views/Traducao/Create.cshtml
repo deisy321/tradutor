@@ -1,28 +1,34 @@
 ﻿@model Tradutor.Models.Traducao
 
-<h2>Adicionar Traduções</h2>
+@{
+    string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+}
+
+<h2>@T("Adicionar Traduções")</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-group">
-        @Html.LabelFor(m => m.IdiomaId)
-        @Html.DropDownListFor(m => m.IdiomaId, (SelectList)ViewBag.IdiomaId, "Selecione o idioma", new { @class = "form-control" })
+        @Html.LabelFor(m => m.IdiomaId, T("Idioma"))
+        @Html.DropDownListFor(m => m.IdiomaId, (SelectList)ViewBag.IdiomaId, T("Selecione o idioma"), new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.IdiomaId)
     </div>
 
     <div class="form-group">
-        @Html.Label("TextoOriginal", "Frases ou palavras (uma por linha)")
-        <textarea name="TextoOriginal" class="form-control" rows="5" placeholder="Digite uma palavra ou frase por linha"></textarea>
+        @Html.Label("TextoOriginal", T("Frases ou palavras (uma por linha)"))
+        <textarea name="TextoOriginal" class="form-control" rows="5" placeholder="@T("Digite uma palavra ou frase por linha")"></textarea>
         @Html.ValidationMessage("TextoOriginal")
     </div>
 
     <div class="form-group">
-        @Html.Label("TextoTraduzido", "Traduções correspondentes (uma por linha)")
-        <textarea name="TextoTraduzido" class="form-control" rows="5" placeholder="Digite a tradução correspondente para cada frase original, na mesma ordem"></textarea>
+        @Html.Label("TextoTraduzido", T("Traduções correspondentes (uma por linha)"))
+        <textarea name="TextoTraduzido" class="form-control" rows="5" placeholder="@T("Digite a tradução correspondente para cada frase original, na mesma ordem")"></textarea>
         @Html.ValidationMessage("TextoTraduzido")
     </div>
 
-    <button type="submit" class="btn btn-primary">Salvar Traduções</button>
+    <button type="submit" class="btn btn-primary">@T("Salvar Traduções")</button>
+    <a href="@Url.Action("Gerenciar", "Traducao", new { idiomaId = Model.IdiomaId })" class="btn btn-secondary ms-2">@T("Voltar")</a>
 }

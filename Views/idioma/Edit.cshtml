@@ -1,17 +1,20 @@
 @model Tradutor.Models.Idioma
 
 @{
-    ViewBag.Title = "Editar Idioma";
+    string idioma = Session["Idioma"]?.ToString() ?? "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+
+    ViewBag.Title = T("Editar Idioma");
 }
 
-<h2>Editar Idioma</h2>
+<h2>@T("Editar Idioma")</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Idioma</h4>
+        <h4>@T("Idioma")</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -43,8 +46,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
-                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+                <input type="submit" value="@T("Salvar")" class="btn btn-primary" />
+                @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-default ms-2" })
             </div>
         </div>
     </div>
