@@ -2,13 +2,15 @@
 @{
     var idiomas = ViewBag.IdiomasCompletos as List<Idioma> ?? new List<Idioma>();
     var idiomaAtual = (Session["Idioma"]?.ToString() ?? "pt").ToLower();
-    var idiomaAtualObj = idiomas.FirstOrDefault(i => i.Codigo.ToLower() == idiomaAtual);
-    var idiomaAtualHtml = idiomaAtualObj != null
-        ? $"<img src='{idiomaAtualObj.BandeiraUrl}' alt='{idiomaAtualObj.Descricao}' style='width:20px; height:14px; margin-right:5px;' /> {idiomaAtualObj.Descricao}"
-        : "<span class='bi bi-globe'></span> Idioma";
 
     Func<string, string> Traduzir = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idiomaAtual);
+
+    var idiomaAtualObj = idiomas.FirstOrDefault(i => i.Codigo.ToLower() == idiomaAtual);
+    var idiomaAtualHtml = idiomaAtualObj != null
+        ? $"<img src='{idiomaAtualObj.BandeiraUrl}' alt='{idiomaAtualObj.Descricao}' style='width:20px; height:14px; margin-right:5px;' /> {Traduzir(idiomaAtualObj.Descricao)}"
+        : $"<span class='bi bi-globe'></span> {Traduzir("Idioma")}";
 }
+
 
 <!DOCTYPE html>
 <html lang="@idiomaAtual">
@@ -59,11 +61,13 @@
                             {
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Trocar", "Idioma", new { lang = item.Codigo, returnUrl = Request.RawUrl })">
-                                        <img src="@item.BandeiraUrl" style="width:20px; height:14px; margin-right:8px;" />
-                                        @item.Descricao
+                                        <img src="@item.BandeiraUrl" alt="@Traduzir(item.Descricao)" style="width:20px; height:14px; margin-right:8px;" />
+
+                                        @Tradutor.Helpers.TradutorHelper.Traduzir(item.Descricao, idiomaAtual)
                                     </a>
                                 </li>
                             }
+
                         </ul>
                     </li>
                 </ul>

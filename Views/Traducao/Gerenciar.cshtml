@@ -1,4 +1,5 @@
 @model List<Tradutor.Models.Traducao>
+
 @{
     ViewBag.Title = "Gerenciar Traduções";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,9 +11,25 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">@T("Gerenciar Traduções para o idioma") <strong>@idioma.Descricao (@idioma.Codigo)</strong></h2>
+        <h2 class="fw-bold">
+            @T("Gerenciar Traduções para o idioma")
+            <strong>@idioma.Descricao (@idioma.Codigo)</strong>
+        </h2>
         @Html.ActionLink(T("Adicionar Tradução"), "Create", "Traducao", new { idiomaId = idioma.Id }, new { @class = "btn btn-success" })
     </div>
+
+    @using (Html.BeginForm("Gerenciar", "Traducao", FormMethod.Get))
+    {
+        <input type="hidden" name="idiomaId" value="@idioma.Id" />
+        <div class="input-group mb-3" style="max-width: 400px;">
+            <input type="text"
+                   name="busca"
+                   value="@(ViewBag.Busca ?? "")"
+                   class="form-control"
+                   placeholder="@T("Filtrar")" />
+            <button class="btn btn-primary" type="submit">@T("Pesquisar")</button>
+        </div>
+    }
 
     @using (Html.BeginForm("ExcluirSelecionadas", "Traducao", FormMethod.Post))
     {
@@ -25,7 +42,7 @@
                     <th style="width: 50px;"></th>
                     <th>@T("Texto Original")</th>
                     <th>@T("Texto Traduzido")</th>
-                    <th style="width: 100px;">@T("Ações")</th>
+                    <th style="width: 130px;">@T("Ações")</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,6 +67,6 @@
         <button type="submit" class="btn btn-danger mt-3">
             <i class="bi bi-trash3"></i> @T("Excluir Selecionadas")
         </button>
-        <a href="@Url.Action("Index", "Traducao")" class="btn btn-secondary mt-3">@T("Voltar")</a>
+        <a href="@Url.Action("Index", "Idioma")" class="btn btn-secondary mt-3">@T("Voltar")</a>
     }
 </div>

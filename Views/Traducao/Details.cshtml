@@ -1,26 +1,30 @@
 @model Tradutor.Models.Traducao
+
 @{
-    ViewBag.Title = "Detalhes da Tradução";
+    string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
+    Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+
+    ViewBag.Title = T("Detalhes da Tradução");
 }
 
-<h2>Detalhes da Tradução</h2>
+<h2>@T("Detalhes da Tradução")</h2>
 
 <div>
-    <h4>Tradução</h4>
+    <h4>@T("Tradução")</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Idioma</dt>
+        <dt>@T("Idioma")</dt>
         <dd>@Model.Idioma.Descricao</dd>
 
-        <dt>Texto Original</dt>
+        <dt>@T("Texto Original")</dt>
         <dd>@Model.TextoOriginal</dd>
 
-        <dt>Texto Traduzido</dt>
+        <dt>@T("Texto Traduzido")</dt>
         <dd>@Model.TextoTraduzido</dd>
     </dl>
 </div>
 
 <p>
-    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) |
-    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-default" })
+    @Html.ActionLink(T("Editar"), "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink(T("Voltar"), "Index", null, new { @class = "btn btn-secondary ms-2" })
 </p>

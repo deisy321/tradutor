@@ -199,20 +199,26 @@ namespace Tradutor.Controllers
             CarregarIdiomasNoViewBag();
             return View(traducao);
         }
-        public ActionResult Gerenciar(int idiomaId)
+        public ActionResult Gerenciar(int idiomaId, string busca = "")
         {
             var idioma = db.Idiomas.Find(idiomaId);
-            if (idioma == null)
-                return HttpNotFound();
+            if (idioma == null) return HttpNotFound();
 
             var traducoes = db.Traducoes
-                .Where(t => t.IdiomaId == idiomaId)
-                .OrderBy(t => t.TextoOriginal)
-                .ToList();
+                              .Where(t => t.IdiomaId == idiomaId &&
+                                          (string.IsNullOrEmpty(busca) ||
+                                           t.TextoOriginal.Contains(busca) ||
+                                           t.TextoTraduzido.Contains(busca)))
+                              .OrderBy(t => t.TextoOriginal)
+                              .ToList();
 
             ViewBag.Idioma = idioma;
+            ViewBag.Busca = busca; // Para manter o texto preenchido no campo busca
+
             return View(traducoes);
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ExcluirSelecionadas(int idiomaId, int[] idsSelecionados)

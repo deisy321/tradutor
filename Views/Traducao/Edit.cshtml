@@ -12,7 +12,6 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
     @Html.HiddenFor(model => model.Id)
 
     <div class="form-horizontal">
@@ -43,9 +42,8 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="@T("Salvar Alterações")" class="btn btn-primary" />
-                @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-secondary ms-2" })
             </div>
         </div>
     </div>
 }
- 

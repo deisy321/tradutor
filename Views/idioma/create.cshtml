@@ -13,7 +13,6 @@
 {
     @Html.AntiForgeryToken()
 
-    @* Aqui exibe mensagens gerais de erro *@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="form-group">
@@ -41,7 +40,7 @@
     </div>
 
     <div id="previewBandeira" style="margin-bottom: 15px;">
-        <!-- Pré-visualização da bandeira aparece aqui -->
+        <!-- @T("Pré-visualização da bandeira aparece aqui") -->
     </div>
 
     <input type="submit" value="@T("Salvar Idioma")" class="btn btn-primary" />

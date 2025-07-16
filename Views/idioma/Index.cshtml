@@ -32,7 +32,8 @@
                             <td>@item.Codigo</td>
                             <td>@item.Descricao</td>
                             <td>
-                                <img src="@item.BandeiraUrl" alt="@item.Descricao" style="width: 30px;" />
+                                <img src="@item.BandeiraUrl" alt="@T(item.Descricao)" style="width: 30px;" />
+
                             </td>
                             <td>
                                 <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-warning btn-sm me-1" title="@T("Editar")">

@@ -3,6 +3,19 @@
 @{
     string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
     Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
+
+    // Converte SelectList do ViewBag para lista mutável
+    var listaOriginal = (SelectList)ViewBag.IdiomaId;
+    var listaItens = listaOriginal.ToList();
+
+    // Traduz o texto de cada item do dropdown
+    foreach (var item in listaItens)
+    {
+        item.Text = T(item.Text);
+    }
+
+    // Cria um novo SelectList com os textos traduzidos
+    var listaTraduzida = new SelectList(listaItens, "Value", "Text", Model.IdiomaId);
 }
 
 <h2>@T("Adicionar Traduções")</h2>
@@ -13,7 +26,7 @@
 
     <div class="form-group">
         @Html.LabelFor(m => m.IdiomaId, T("Idioma"))
-        @Html.DropDownListFor(m => m.IdiomaId, (SelectList)ViewBag.IdiomaId, T("Selecione o idioma"), new { @class = "form-control" })
+        @Html.DropDownListFor(m => m.IdiomaId, listaTraduzida, T("Selecione o idioma"), new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.IdiomaId)
     </div>
 

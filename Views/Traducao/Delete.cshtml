@@ -1,7 +1,6 @@
 @model Tradutor.Models.Traducao
 
 @{
-    // Corrigido: usando string ao invés de int
     string idioma = Session["Idioma"] != null ? Session["Idioma"].ToString() : "pt";
     Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
 
@@ -30,6 +29,6 @@
     {
         @Html.AntiForgeryToken()
         <input type="submit" value="@T("Excluir")" class="btn btn-danger" />
-        @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-default" })
+        @Html.ActionLink(T("Cancelar"), "Index", null, new { @class = "btn btn-secondary ms-2" })
     }
 </div>
