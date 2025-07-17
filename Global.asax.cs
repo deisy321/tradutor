@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -19,7 +19,7 @@ namespace tradutor
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
             if (HttpContext.Current.Session == null)
-                return; // Sessão não iniciada ainda
+                return; // Sessï¿½o nï¿½o iniciada ainda
 
             string idiomaSelecionado = null;
 

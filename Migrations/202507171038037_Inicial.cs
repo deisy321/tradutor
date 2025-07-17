@@ -3,15 +3,16 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AtualizacaoModelo : DbMigration
+    public partial class Inicial : DbMigration
     {
         public override void Up()
         {
-            DropColumn("dbo.Traducaos", "TempoVerbal");
-            DropColumn("dbo.Traducaos", "Genero");
-            DropColumn("dbo.Traducaos", "Numero");
+            // DropColumn("dbo.Traducaos", "TempoVerbal");
+
+            // DropColumn("dbo.Traducaos", "Genero");
+            //DropColumn("dbo.Traducaos", "Numero");
         }
-        
+
         public override void Down()
         {
             AddColumn("dbo.Traducaos", "Numero", c => c.String());
