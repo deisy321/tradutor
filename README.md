@@ -13,7 +13,7 @@ Projeto Tradutor é uma aplicação ASP.NET MVC que permite gerenciar idiomas e 
 
 ## Tecnologias utilizadas
 - ASP.NET MVC 5
-- Entity Framework 6 (Code First)
+- Entity Framework  (Code First)
 - Bootstrap 5 para interface
 - C#
 - SQL Server Express (local)
