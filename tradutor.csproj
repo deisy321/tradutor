@@ -175,6 +175,7 @@
     <Content Include="Views\Acount\Login.cshtml" />
     <Content Include="Views\Acount\Register.cshtml" />
     <None Include="Views\Idioma\Edit.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Traducao\Index.cshtml" />
     <Content Include="Views\Traducao\Edit.cshtml" />
     <Content Include="Views\Traducao\Delete.cshtml" />
@@ -231,7 +232,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Idioma\Index.cshtml" />
     <Content Include="Views\Idioma\create.cshtml" />
     <Content Include="Views\Traducao\Create.cshtml" />
