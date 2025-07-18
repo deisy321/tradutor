@@ -1,12 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using Tradutor.DAL;
 using Tradutor.Models;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Tradutor.Controllers
 {
@@ -90,6 +90,8 @@ namespace Tradutor.Controllers
                 return View();
             }
 
+            bool encontrouDuplicado = false;
+
             for (int i = 0; i < linhasOriginais.Length; i++)
             {
                 var original = linhasOriginais[i].Trim();
@@ -99,7 +101,12 @@ namespace Tradutor.Controllers
                     t.IdiomaId == IdiomaId &&
                     t.TextoOriginal.ToLower() == original.ToLower());
 
-                if (!jaExiste)
+                if (jaExiste)
+                {
+                    ModelState.AddModelError("TextoOriginal", $"A palavra ou frase '{original}' já existe para esse idioma.");
+                    encontrouDuplicado = true;
+                }
+                else
                 {
                     var novaTraducao = new Traducao
                     {
@@ -112,128 +119,36 @@ namespace Tradutor.Controllers
                 }
             }
 
-            db.SaveChanges();
-
-            return RedirectToAction("Index");
-        }
-
-        // GET: Traducoes/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            Traducao traducao = db.Traducoes.Find(id);
-            if (traducao == null)
-                return HttpNotFound();
-
-            ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", traducao.IdiomaId);
-
-            return View(traducao);
-        }
-
-        // POST: Traducoes/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Traducao traducao)
-        {
-            if (ModelState.IsValid)
+            if (encontrouDuplicado)
             {
-                // Busca a tradução original para evitar conflitos
-                var traducaoOriginal = db.Traducoes.Find(traducao.Id);
-                if (traducaoOriginal == null)
-                    return HttpNotFound();
-
-                // Atualiza os campos editáveis
-                traducaoOriginal.TextoOriginal = traducao.TextoOriginal;
-                traducaoOriginal.TextoTraduzido = traducao.TextoTraduzido;
-                traducaoOriginal.IdiomaId = traducao.IdiomaId;
-
-                // Salva as alterações
-                db.SaveChanges();
-
-                return RedirectToAction("Index");
+                CarregarIdiomasNoViewBag();
+                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", IdiomaId);
+                return View();
             }
 
-            // Recarrega dropdown se tiver erro para mostrar na view
-            ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", traducao.IdiomaId);
-            return View(traducao);
-        }
-
-
-        // GET: Traducao/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var traducao = db.Traducoes.Include(t => t.Idioma).FirstOrDefault(t => t.Id == id);
-            if (traducao == null)
-                return HttpNotFound();
-
-            CarregarIdiomasNoViewBag();
-            return View(traducao);
-        }
-
-        // POST: Traducao/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            var traducao = db.Traducoes.Find(id);
-            db.Traducoes.Remove(traducao);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Gerenciar", new { idiomaId = IdiomaId });
         }
 
-        // GET: Traducao/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var traducao = db.Traducoes.Include(t => t.Idioma).FirstOrDefault(t => t.Id == id);
-            if (traducao == null)
-                return HttpNotFound();
-
-            CarregarIdiomasNoViewBag();
-            return View(traducao);
-        }
-        public ActionResult Gerenciar(int idiomaId, string busca = "")
+        // GET: Traducao/Gerenciar
+        public ActionResult Gerenciar(int idiomaId)
         {
             var idioma = db.Idiomas.Find(idiomaId);
-            if (idioma == null) return HttpNotFound();
-
-            var traducoes = db.Traducoes
-                              .Where(t => t.IdiomaId == idiomaId &&
-                                          (string.IsNullOrEmpty(busca) ||
-                                           t.TextoOriginal.Contains(busca) ||
-                                           t.TextoTraduzido.Contains(busca)))
-                              .OrderBy(t => t.TextoOriginal)
-                              .ToList();
-
-            ViewBag.Idioma = idioma;
-            ViewBag.Busca = busca; // Para manter o texto preenchido no campo busca
-
-            return View(traducoes);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExcluirSelecionadas(int idiomaId, int[] idsSelecionados)
-        {
-            if (idsSelecionados != null && idsSelecionados.Length > 0)
+            if (idioma == null)
             {
-                var traducoes = db.Traducoes
-                    .Where(t => idsSelecionados.Contains(t.Id) && t.IdiomaId == idiomaId)
-                    .ToList();
-
-                db.Traducoes.RemoveRange(traducoes);
-                db.SaveChanges();
+                return HttpNotFound("Idioma não encontrado.");
             }
 
-            return RedirectToAction("Gerenciar", new { idiomaId = idiomaId });
+            var traducoes = db.Traducoes
+                .Where(t => t.IdiomaId == idiomaId)
+                .OrderBy(t => t.TextoOriginal)
+                .ToList();
+
+            // Passa o objeto idioma para a ViewBag para evitar NullReferenceException na view
+            ViewBag.Idioma = idioma;
+
+            return View(traducoes);
         }
 
         // Tradução rápida via Ajax

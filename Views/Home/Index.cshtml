@@ -6,5 +6,27 @@
     Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
 }
 
-<h2>@T("Seja bem-vindo ao sistema")</h2>
-<p>@T("Obrigado")</p>
+<div class="container mt-5">
+    <h1 class="display-4 mb-4">@T("Seja bem-vindo ao Tradutor Multilíngue")</h1>
+
+    <p class="lead">@T("Este sistema permite traduzir palavras e frases entre vários idiomas.")</p>
+
+    <hr />
+
+    <h3>@T("Como funciona?")</h3>
+    <ul>
+        <li>@T("Você pode cadastrar traduções em diferentes idiomas.")</li>
+        <li>@T("Depois, ao acessar o sistema, os textos serão exibidos automaticamente no idioma escolhido.")</li>
+        <li>@T("Também é possível traduzir frases completas usando o tradutor.")</li>
+    </ul>
+
+    <section class="alert alert-warning mt-4">
+        <h4>@T("Atenção!")</h4>
+        <p>
+            @T("Para que uma tradução seja encontrada no sistema, o texto original digitado deve ser exatamente igual ao que foi cadastrado no banco de dados.")
+        </p>
+        <p>
+            @T("Isso inclui letras maiúsculas/minúsculas, espaços e pontuação. Por exemplo, 'Olá' é diferente de 'ola' ou ' Olá '.")
+        </p>
+    </section>
+</div> 
