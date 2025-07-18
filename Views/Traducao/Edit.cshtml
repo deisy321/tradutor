@@ -9,7 +9,8 @@
 
 <h2>@T("Editar Tradução")</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Traducao", FormMethod.Post))
+
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.Id)

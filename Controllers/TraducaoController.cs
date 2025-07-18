@@ -167,7 +167,6 @@ namespace Tradutor.Controllers
             return View(traducao);
         }
 
-        // POST: Traducao/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Traducao model)
@@ -179,7 +178,6 @@ namespace Tradutor.Controllers
                 return View(model);
             }
 
-            // Verifica se já existe uma tradução duplicada para o mesmo idioma e texto original
             bool existeDuplicado = db.Traducoes.Any(t =>
                 t.Id != model.Id &&
                 t.IdiomaId == model.IdiomaId &&
@@ -193,11 +191,20 @@ namespace Tradutor.Controllers
                 return View(model);
             }
 
-            db.Entry(model).State = EntityState.Modified;
+            var traducaoExistente = db.Traducoes.Find(model.Id);
+            if (traducaoExistente == null)
+                return HttpNotFound();
+
+            traducaoExistente.IdiomaId = model.IdiomaId;
+            traducaoExistente.TextoOriginal = model.TextoOriginal;
+            traducaoExistente.TextoTraduzido = model.TextoTraduzido;
+
             db.SaveChanges();
 
+            TempData["MensagemSucesso"] = "Tradução atualizada com sucesso!";
             return RedirectToAction("Gerenciar", new { idiomaId = model.IdiomaId });
         }
+
 
 
 
