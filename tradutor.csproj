@@ -176,11 +176,11 @@
     <Content Include="Views\Acount\Register.cshtml" />
     <None Include="Views\Idioma\Edit.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Traducao\Index.cshtml" />
     <Content Include="Views\Traducao\Edit.cshtml" />
     <Content Include="Views\Traducao\Delete.cshtml" />
     <Content Include="Views\Traducao\Gerenciar.cshtml" />
     <Content Include="Web.config" />
+    <Content Include="Views\Traducao\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

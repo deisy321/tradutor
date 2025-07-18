@@ -20,22 +20,49 @@ namespace Tradutor.Controllers
         }
 
         // GET: Traducao
-        public ActionResult Index()
+        public ActionResult Index(string textoOriginalBusca = null, int? idiomaId = null)
         {
-            var traducoes = db.Traducoes.Include(t => t.Idioma)
+            var traducoes = db.Traducoes.Include(t => t.Idioma).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(textoOriginalBusca))
+            {
+                traducoes = traducoes.Where(t => t.TextoOriginal.Contains(textoOriginalBusca));
+            }
+
+            if (idiomaId.HasValue && idiomaId.Value > 0)
+            {
+                traducoes = traducoes.Where(t => t.IdiomaId == idiomaId.Value);
+            }
+
+            var listaFiltrada = traducoes
                 .OrderBy(t => t.Idioma.Descricao)
                 .ThenBy(t => t.TextoOriginal)
                 .ToList();
 
             CarregarIdiomasNoViewBag();
 
-            var idiomaSessao = Session["Idioma"]?.ToString().ToLower() ?? "pt";
-            var idiomaAtual = db.Idiomas.FirstOrDefault(i => i.Codigo.ToLower() == idiomaSessao)
-                              ?? db.Idiomas.OrderBy(i => i.Id).FirstOrDefault();
+            // Definir idioma atual (usa Session["Idioma"], ou idioma padrão)
+            ViewBag.IdiomaAtualId = idiomaId ?? GetIdiomaAtualId();
 
-            ViewBag.IdiomaAtualId = idiomaAtual?.Id ?? 1;
+            ViewBag.TextoOriginalBusca = textoOriginalBusca;  // manter valor no input
+            ViewBag.IdiomaSelecionado = idiomaId;
 
-            return View(traducoes);
+            return View(listaFiltrada);
+        }
+
+        private int GetIdiomaAtualId()
+        {
+            var codigoIdiomaSessao = Session["Idioma"]?.ToString().ToLower();
+
+            if (!string.IsNullOrEmpty(codigoIdiomaSessao))
+            {
+                var idioma = db.Idiomas.FirstOrDefault(i => i.Codigo.ToLower() == codigoIdiomaSessao);
+                if (idioma != null)
+                    return idioma.Id;
+            }
+
+            var primeiroIdioma = db.Idiomas.OrderBy(i => i.Id).FirstOrDefault();
+            return primeiroIdioma?.Id ?? 1;
         }
 
         // GET: Traducao/Create
@@ -44,10 +71,10 @@ namespace Tradutor.Controllers
             if (idiomaId == null)
             {
                 var primeiroIdioma = db.Idiomas.OrderBy(i => i.Id).FirstOrDefault();
-                if (primeiroIdioma != null)
-                    idiomaId = primeiroIdioma.Id;
-                else
+                if (primeiroIdioma == null)
                     return HttpNotFound("Nenhum idioma cadastrado.");
+
+                idiomaId = primeiroIdioma.Id;
             }
 
             CarregarIdiomasNoViewBag();
@@ -56,7 +83,6 @@ namespace Tradutor.Controllers
             var traducao = new Traducao { IdiomaId = idiomaId.Value };
             return View(traducao);
         }
-
 
         // POST: Traducao/Create
         [HttpPost]
@@ -75,8 +101,7 @@ namespace Tradutor.Controllers
 
             if (!ModelState.IsValid)
             {
-                CarregarIdiomasNoViewBag();
-                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", IdiomaId);
+                PrepararViewCreate(IdiomaId);
                 return View();
             }
 
@@ -86,8 +111,7 @@ namespace Tradutor.Controllers
             if (linhasOriginais.Length != linhasTraduzidas.Length)
             {
                 ModelState.AddModelError("", "O número de frases originais e traduções deve ser igual.");
-                CarregarIdiomasNoViewBag();
-                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", IdiomaId);
+                PrepararViewCreate(IdiomaId);
                 return View();
             }
 
@@ -115,15 +139,13 @@ namespace Tradutor.Controllers
                         TextoOriginal = original,
                         TextoTraduzido = traduzido
                     };
-
                     db.Traducoes.Add(novaTraducao);
                 }
             }
 
             if (encontrouDuplicado)
             {
-                CarregarIdiomasNoViewBag();
-                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", IdiomaId);
+                PrepararViewCreate(IdiomaId);
                 return View();
             }
 
@@ -131,6 +153,14 @@ namespace Tradutor.Controllers
 
             return RedirectToAction("Gerenciar", new { idiomaId = IdiomaId });
         }
+
+        private void PrepararViewCreate(int idiomaId)
+        {
+            CarregarIdiomasNoViewBag();
+            ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", idiomaId);
+        }
+
+        // POST: Traducao/ExcluirSelecionadas
         [HttpPost]
         public ActionResult ExcluirSelecionadas(int[] idsSelecionados)
         {
@@ -140,17 +170,23 @@ namespace Tradutor.Controllers
                 {
                     var traducao = db.Traducoes.Find(id);
                     if (traducao != null)
-                    {
                         db.Traducoes.Remove(traducao);
-                    }
                 }
-
                 db.SaveChanges();
             }
 
-            // Para redirecionar para o idioma da primeira tradução excluída, se quiser
-            return RedirectToAction("Gerenciar", new { idiomaId = idsSelecionados != null && idsSelecionados.Length > 0 ? db.Traducoes.Find(idsSelecionados.FirstOrDefault())?.IdiomaId ?? 1 : 1 });
+            // Redirecionar para o idioma da primeira tradução excluída, se existir
+            int idiomaId = 1;
+            if (idsSelecionados != null && idsSelecionados.Length > 0)
+            {
+                var primeiraTraducao = db.Traducoes.Find(idsSelecionados.FirstOrDefault());
+                if (primeiraTraducao != null)
+                    idiomaId = primeiraTraducao.IdiomaId;
+            }
+
+            return RedirectToAction("Gerenciar", new { idiomaId });
         }
+
         // GET: Traducao/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -167,6 +203,7 @@ namespace Tradutor.Controllers
             return View(traducao);
         }
 
+        // POST: Traducao/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Traducao model)
@@ -205,9 +242,6 @@ namespace Tradutor.Controllers
             return RedirectToAction("Gerenciar", new { idiomaId = model.IdiomaId });
         }
 
-
-
-
         // GET: Traducao/Gerenciar
         public ActionResult Gerenciar(int idiomaId)
         {
@@ -222,13 +256,12 @@ namespace Tradutor.Controllers
                 .OrderBy(t => t.TextoOriginal)
                 .ToList();
 
-            // Passa o objeto idioma para a ViewBag para evitar NullReferenceException na view
             ViewBag.Idioma = idioma;
 
             return View(traducoes);
         }
 
-        // Tradução rápida via Ajax
+        // POST: Traducao/TraduzirFrase (Ajax)
         [HttpPost]
         public JsonResult TraduzirFrase(string frase, int idiomaId)
         {
@@ -245,12 +278,13 @@ namespace Tradutor.Controllers
                 return Json(new { sucesso = true, traducao = traducaoFrase.TextoTraduzido });
             }
 
+            // Traduz palavra a palavra
             var palavras = Regex.Matches(frase, @"\b[\w']+\b")
                 .Cast<Match>()
                 .Select(m => m.Value)
                 .ToList();
 
-            List<string> palavrasTraduzidas = new List<string>();
+            var palavrasTraduzidas = new List<string>();
 
             foreach (var palavra in palavras)
             {

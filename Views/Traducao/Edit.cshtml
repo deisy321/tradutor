@@ -3,40 +3,48 @@
 @{
     string idioma = Session["Idioma"]?.ToString() ?? "pt";
     Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
-
     ViewBag.Title = T("Editar Tradução");
 }
 
 <h2>@T("Editar Tradução")</h2>
 
 @using (Html.BeginForm("Edit", "Traducao", FormMethod.Post))
-
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.Id)
 
     <div class="form-horizontal">
         <hr />
-        @Html.ValidationSummary(true)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
-            <label for="IdiomaId" class="control-label col-md-2">@T("Idioma")</label>
+            @Html.Label("IdiomaId", T("Idioma"), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.IdiomaId, (SelectList)ViewBag.IdiomaId, T("Selecione o idioma"), new { @class = "form-control" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TextoOriginal, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.TextoOriginal, T("Texto Original"), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.TextoOriginal, new { @class = "form-control", placeholder = T("Digite o texto original") })
+                @Html.TextBoxFor(model => model.TextoOriginal, new
+                {
+                    @class = "form-control",
+                    placeholder = T("Digite o texto original")
+                })
+                @Html.ValidationMessageFor(model => model.TextoOriginal, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TextoTraduzido, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.TextoTraduzido, T("Texto Traduzido"), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.TextoTraduzido, new { @class = "form-control", placeholder = T("Digite o texto traduzido") })
+                @Html.TextBoxFor(model => model.TextoTraduzido, new
+                {
+                    @class = "form-control",
+                    placeholder = T("Digite o texto traduzido")
+                })
+                @Html.ValidationMessageFor(model => model.TextoTraduzido, "", new { @class = "text-danger" })
             </div>
         </div>
 

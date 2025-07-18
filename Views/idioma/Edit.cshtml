@@ -3,7 +3,6 @@
 @{
     string idioma = Session["Idioma"]?.ToString() ?? "pt";
     Func<string, string> T = texto => Tradutor.Helpers.TradutorHelper.Traduzir(texto, idioma);
-
     ViewBag.Title = T("Editar Idioma");
 }
 
@@ -21,25 +20,37 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Codigo, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Codigo, T("Código"), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Codigo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextBoxFor(model => model.Codigo, new
+                {
+                    @class = "form-control",
+                    placeholder = T("Digite o código do idioma")
+                })
                 @Html.ValidationMessageFor(model => model.Codigo, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Descricao, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Descricao, T("Descrição"), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Descricao, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextBoxFor(model => model.Descricao, new
+                {
+                    @class = "form-control",
+                    placeholder = T("Digite a descrição do idioma")
+                })
                 @Html.ValidationMessageFor(model => model.Descricao, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.BandeiraUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.BandeiraUrl, T("URL da Bandeira"), htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.BandeiraUrl, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextBoxFor(model => model.BandeiraUrl, new
+                {
+                    @class = "form-control",
+                    placeholder = T("Cole a URL da bandeira")
+                })
                 @Html.ValidationMessageFor(model => model.BandeiraUrl, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -53,7 +64,6 @@
     </div>
 }
 
-@section Scripts
-{
+@section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
