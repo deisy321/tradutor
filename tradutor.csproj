@@ -179,7 +179,6 @@
     <Content Include="Views\Traducao\Index.cshtml" />
     <Content Include="Views\Traducao\Edit.cshtml" />
     <Content Include="Views\Traducao\Delete.cshtml" />
-    <Content Include="Views\Traducao\Details.cshtml" />
     <Content Include="Views\Traducao\Gerenciar.cshtml" />
     <Content Include="Web.config" />
     <None Include="Web.Debug.config">

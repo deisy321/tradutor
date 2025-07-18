@@ -57,6 +57,7 @@ namespace Tradutor.Controllers
             return View(traducao);
         }
 
+
         // POST: Traducao/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -130,6 +131,75 @@ namespace Tradutor.Controllers
 
             return RedirectToAction("Gerenciar", new { idiomaId = IdiomaId });
         }
+        [HttpPost]
+        public ActionResult ExcluirSelecionadas(int[] idsSelecionados)
+        {
+            if (idsSelecionados != null && idsSelecionados.Length > 0)
+            {
+                foreach (var id in idsSelecionados)
+                {
+                    var traducao = db.Traducoes.Find(id);
+                    if (traducao != null)
+                    {
+                        db.Traducoes.Remove(traducao);
+                    }
+                }
+
+                db.SaveChanges();
+            }
+
+            // Para redirecionar para o idioma da primeira tradução excluída, se quiser
+            return RedirectToAction("Gerenciar", new { idiomaId = idsSelecionados != null && idsSelecionados.Length > 0 ? db.Traducoes.Find(idsSelecionados.FirstOrDefault())?.IdiomaId ?? 1 : 1 });
+        }
+        // GET: Traducao/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var traducao = db.Traducoes.Find(id);
+            if (traducao == null)
+                return HttpNotFound();
+
+            CarregarIdiomasNoViewBag();
+            ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", traducao.IdiomaId);
+
+            return View(traducao);
+        }
+
+        // POST: Traducao/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Traducao model)
+        {
+            if (!ModelState.IsValid)
+            {
+                CarregarIdiomasNoViewBag();
+                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", model.IdiomaId);
+                return View(model);
+            }
+
+            // Verifica se já existe uma tradução duplicada para o mesmo idioma e texto original
+            bool existeDuplicado = db.Traducoes.Any(t =>
+                t.Id != model.Id &&
+                t.IdiomaId == model.IdiomaId &&
+                t.TextoOriginal.ToLower() == model.TextoOriginal.ToLower());
+
+            if (existeDuplicado)
+            {
+                ModelState.AddModelError("TextoOriginal", "Já existe uma tradução para essa palavra/frase neste idioma.");
+                CarregarIdiomasNoViewBag();
+                ViewBag.IdiomaId = new SelectList(db.Idiomas, "Id", "Descricao", model.IdiomaId);
+                return View(model);
+            }
+
+            db.Entry(model).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("Gerenciar", new { idiomaId = model.IdiomaId });
+        }
+
+
 
         // GET: Traducao/Gerenciar
         public ActionResult Gerenciar(int idiomaId)
