@@ -1,0 +1,34 @@
+﻿@model Tradutor.Models.Utilizador
+
+@{
+    ViewBag.Title = "Eliminar Utilizador";
+}
+
+<h2>Tem certeza que deseja eliminar este Utilizador?</h2>
+
+<div>
+    <h4>Utilizador</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Nome</dt>
+        <dd>@Model.Nome</dd>
+
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+
+        <dt>Grupo</dt>
+        <dd>@Model.GrupoPermissao?.Nome</dd>
+
+        <dt>Empresas</dt>
+        <dd>
+            @string.Join(", ", Model.Empresas.Select(e => e.Nome))
+        </dd>
+    </dl>
+</div>
+
+@using (Html.BeginForm("DeleteConfirmed", "Utilizador", new { id = Model.Id }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+}

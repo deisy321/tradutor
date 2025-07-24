@@ -1,0 +1,35 @@
+﻿@model Tradutor.Models.Empresa
+
+@{
+    ViewBag.Title = "Detalhes da Empresa";
+}
+
+<h2>Detalhes da Empresa</h2>
+
+<div>
+    <h4>@Model.Nome</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Endereço</dt>
+        <dd>@Model.Endereco</dd>
+
+        <dt>Telefone</dt>
+        <dd>@Model.Telefone</dd>
+
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+
+     
+
+        <dt>Descrição</dt>
+        <dd>@Model.Descricao</dd>
+
+        <dt>Responsável</dt>
+        <dd>@Model.Responsavel</dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+</p>

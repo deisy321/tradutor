@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress />
+    <Use64BitIISExpress>false</Use64BitIISExpress>
     <IISExpressSSLPort>44395</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -155,9 +155,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\EmpresaController.cs" />
+    <Compile Include="Controllers\GrupoPermissaoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IdiomaController.cs" />
     <Compile Include="Controllers\TraducaoController.cs" />
+    <Compile Include="Controllers\UtilizadorController.cs" />
     <Compile Include="DAL\AppDbContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -168,12 +171,35 @@
     <Compile Include="Migrations\202507171038037_Inicial.Designer.cs">
       <DependentUpon>202507171038037_Inicial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202507231544160_CriarGruposEUtilizadores.cs" />
+    <Compile Include="Migrations\202507231544160_CriarGruposEUtilizadores.Designer.cs">
+      <DependentUpon>202507231544160_CriarGruposEUtilizadores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202507231623006_AtualizarModelo.cs" />
+    <Compile Include="Migrations\202507231623006_AtualizarModelo.Designer.cs">
+      <DependentUpon>202507231623006_AtualizarModelo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202507241010457_AtualizacaoModelo.cs" />
+    <Compile Include="Migrations\202507241010457_AtualizacaoModelo.Designer.cs">
+      <DependentUpon>202507241010457_AtualizacaoModelo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Empresa.cs" />
+    <Compile Include="Models\GrupoPermissao.cs" />
     <Compile Include="Models\Idioma.cs" />
     <Compile Include="Models\Traducao.cs" />
+    <Compile Include="Models\Utilizador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Views\Acount\Login.cshtml" />
-    <Content Include="Views\Acount\Register.cshtml" />
+    <Content Include="Views\GrupoPermissao\Index.cshtml" />
+    <Content Include="Views\GrupoPermissao\Create.cshtml" />
+    <Content Include="Views\GrupoPermissao\Edit.cshtml" />
+    <Content Include="Views\GrupoPermissao\Details.cshtml" />
+    <Content Include="Views\GrupoPermissao\Delete.cshtml" />
+    <Content Include="Views\Empresa\Create.cshtml" />
+    <Content Include="Views\Empresa\Index.cshtml" />
+    <Content Include="Views\Empresa\Edit.cshtml" />
+    <Content Include="Views\Empresa\Details.cshtml" />
+    <Content Include="Views\Empresa\Delete.cshtml" />
     <None Include="Views\Idioma\Edit.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Traducao\Edit.cshtml" />
@@ -181,6 +207,11 @@
     <Content Include="Views\Traducao\Gerenciar.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Views\Traducao\Index.cshtml" />
+    <Content Include="Views\Utilizador\Index.cshtml" />
+    <Content Include="Views\Utilizador\Create.cshtml" />
+    <Content Include="Views\Utilizador\Details.cshtml" />
+    <Content Include="Views\Utilizador\Edit.cshtml" />
+    <Content Include="Views\Utilizador\Delete.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -272,6 +303,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202507171038037_Inicial.resx">
       <DependentUpon>202507171038037_Inicial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507231544160_CriarGruposEUtilizadores.resx">
+      <DependentUpon>202507231544160_CriarGruposEUtilizadores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507231623006_AtualizarModelo.resx">
+      <DependentUpon>202507231623006_AtualizarModelo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507241010457_AtualizacaoModelo.resx">
+      <DependentUpon>202507241010457_AtualizacaoModelo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

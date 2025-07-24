@@ -1,0 +1,32 @@
+﻿@model Tradutor.Models.Utilizador
+
+@{
+    ViewBag.Title = "Detalhes do Utilizador";
+}
+
+<h2>Detalhes do Utilizador</h2>
+
+<div>
+    <h4>Utilizador</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Nome</dt>
+        <dd>@Model.Nome</dd>
+
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+
+        <dt>Grupo de Permissão</dt>
+        <dd>@Model.GrupoPermissao?.Nome</dd>
+
+        <dt>Empresas</dt>
+        <dd>
+            @string.Join(", ", Model.Empresas.Select(e => e.Nome))
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" }) |
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+</p>

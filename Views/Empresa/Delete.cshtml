@@ -1,0 +1,37 @@
+﻿@model Tradutor.Models.Empresa
+
+@{
+    ViewBag.Title = "Excluir Empresa";
+}
+
+<h2>Excluir Empresa</h2>
+
+<h3>Tem certeza que deseja excluir essa empresa?</h3>
+
+<div>
+    <h4>@Model.Nome</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Endereço</dt>
+        <dd>@Model.Endereco</dd>
+
+        <dt>Telefone</dt>
+        <dd>@Model.Telefone</dd>
+
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+
+        <dt>Descrição</dt>
+        <dd>@Model.Descricao</dd>
+
+        <dt>Responsável</dt>
+        <dd>@Model.Responsavel</dd>
+    </dl>
+</div>
+
+@using (Html.BeginForm("Delete", "Empresa", new { id = Model.Id }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+}

@@ -1,0 +1,29 @@
+﻿@model Tradutor.Models.GrupoPermissao
+
+@{
+    ViewBag.Title = "Detalhes do Grupo";
+}
+
+<h2>@Model.Nome</h2>
+
+<p><strong>Código:</strong> @Model.Codigo</p>
+
+<h4>Utilizadores no grupo:</h4>
+@if (Model.Utilizadores != null && Model.Utilizadores.Any())
+{
+    <ul>
+        @foreach (var user in Model.Utilizadores)
+        {
+            <li>@user.Nome - @user.Empresa</li>
+        }
+    </ul>
+}
+else
+{
+    <p><em>Nenhum utilizador neste grupo.</em></p>
+}
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Voltar", "Index")
+</p>

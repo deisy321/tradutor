@@ -1,0 +1,27 @@
+﻿@model Tradutor.Models.GrupoPermissao
+
+@{
+    ViewBag.Title = "Criar Grupo";
+}
+
+<h2>Criar Grupo</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Codigo, htmlAttributes: new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Nome, htmlAttributes: new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+    </div>
+}

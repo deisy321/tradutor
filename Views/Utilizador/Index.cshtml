@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Tradutor.Models.Utilizador>
+
+@{
+    ViewBag.Title = "Lista de Utilizadores";
+}
+
+<h2>Utilizadores</h2>
+
+<p>
+    @Html.ActionLink("Criar Novo Utilizador", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Grupo</th>
+            <th>Empresas</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Email</td>
+                <td>@(item.GrupoPermissao != null ? item.GrupoPermissao.Nome : "Sem grupo")</td>
+                <td>@string.Join(", ", item.Empresas.Select(e => e.Nome))</td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-warning" }) |
+                    @Html.ActionLink("Detalhes", "Details", new { id = item.Id }, new { @class = "btn btn-sm btn-info" }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-sm btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

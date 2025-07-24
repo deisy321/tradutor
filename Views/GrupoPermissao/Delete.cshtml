@@ -1,0 +1,16 @@
+﻿@model Tradutor.Models.GrupoPermissao
+
+@{
+    ViewBag.Title = "Excluir Grupo";
+}
+
+<h2>Excluir Grupo</h2>
+
+<h4>Tem certeza que deseja excluir o grupo "@Model.Nome"?</h4>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <input type="submit" value="Confirmar" class="btn btn-danger" />
+    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+}

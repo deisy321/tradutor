@@ -1,0 +1,58 @@
+﻿@model Tradutor.Models.Empresa
+
+@{
+    ViewBag.Title = "Editar Empresa";
+}
+
+<h2>Editar Empresa</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="form-horizontal">
+        <!-- Mesmos campos do Create -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.Nome)
+            @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Nome)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Endereco)
+            @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Telefone)
+            @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Descricao)
+            @Html.TextAreaFor(m => m.Descricao, new { @class = "form-control", rows = 3 })
+        </div>
+
+      
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Responsavel)
+            @Html.TextBoxFor(m => m.Responsavel, new { @class = "form-control" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
