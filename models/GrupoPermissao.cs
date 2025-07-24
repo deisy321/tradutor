@@ -14,5 +14,6 @@ namespace Tradutor.Models
         public string Nome { get; set; }
 
         public virtual ICollection<Utilizador> Utilizadores { get; set; }
+        public virtual ICollection<Empresa> Empresas { get; set; } = new HashSet<Empresa>();
     }
 }

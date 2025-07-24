@@ -8,6 +8,9 @@
 }
 
 <h2>@T(ViewBag.Title)</h2>
+<p>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Voltar</a>
+</p>
 
 @using (Html.BeginForm())
 {
@@ -45,3 +48,4 @@
 
     <input type="submit" value="@T("Salvar Idioma")" class="btn btn-primary" />
 }
+

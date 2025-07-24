@@ -183,6 +183,10 @@
     <Compile Include="Migrations\202507241010457_AtualizacaoModelo.Designer.cs">
       <DependentUpon>202507241010457_AtualizacaoModelo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202507241201557_AtualizaModelos.cs" />
+    <Compile Include="Migrations\202507241201557_AtualizaModelos.Designer.cs">
+      <DependentUpon>202507241201557_AtualizaModelos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Empresa.cs" />
     <Compile Include="Models\GrupoPermissao.cs" />
@@ -312,6 +316,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202507241010457_AtualizacaoModelo.resx">
       <DependentUpon>202507241010457_AtualizacaoModelo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507241201557_AtualizaModelos.resx">
+      <DependentUpon>202507241201557_AtualizaModelos.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

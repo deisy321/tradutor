@@ -93,11 +93,27 @@ namespace Tradutor.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            GrupoPermissao grupoPermissao = db.GruposPermissao.Find(id);
+            var grupoPermissao = db.GruposPermissao
+                .Include(g => g.Utilizadores)
+                .FirstOrDefault(g => g.Id == id);
+
+            if (grupoPermissao == null)
+            {
+                return HttpNotFound("Grupo de permissão não encontrado.");
+            }
+
+            if (grupoPermissao.Utilizadores.Any())
+            {
+                ModelState.AddModelError("", "Não é possível excluir este grupo. Ele possui utilizadores associados.");
+                return View("Delete", grupoPermissao);
+            }
+
             db.GruposPermissao.Remove(grupoPermissao);
             db.SaveChanges();
+
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {

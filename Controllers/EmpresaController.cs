@@ -34,6 +34,8 @@ namespace Tradutor.Controllers
         // GET: Empresa/Create
         public ActionResult Create()
         {
+            // Passa a lista de empresas para a View
+            ViewBag.ListaEmpresas = db.Empresas.ToList();
             return View();
         }
 
@@ -46,9 +48,12 @@ namespace Tradutor.Controllers
             {
                 db.Empresas.Add(empresa);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                // Após salvar, redireciona para Create novamente para mostrar a lista atualizada
+                return RedirectToAction("Create");
             }
 
+            // Em caso de erro, retorna a lista para a View para continuar mostrando a tabela
+            ViewBag.ListaEmpresas = db.Empresas.ToList();
             return View(empresa);
         }
 
@@ -109,9 +114,8 @@ namespace Tradutor.Controllers
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 db.Dispose();
-            }
+
             base.Dispose(disposing);
         }
     }

@@ -16,44 +16,63 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Nome, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.Label("Grupo de Permissão", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("GrupoPermissaoId", (SelectList)ViewBag.GrupoPermissaoId, "Selecione", new { @class = "form-control" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Empresas", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.ListBox("EmpresasSelecionadas", (MultiSelectList)ViewBag.Empresas, new { @class = "form-control", size = 6 })
-            </div>
-        </div>
+        <!-- Adicione outros campos que o modelo Utilizador tiver -->
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Criar" class="btn btn-primary" />
-                @Html.ActionLink("Voltar à Lista", "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
 }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+<hr />
+
+<h3>Lista de Utilizadores</h3>
+
+@if (ViewBag.ListaUtilizadores != null && ((List<Tradutor.Models.Utilizador>)ViewBag.ListaUtilizadores).Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var utilizador in (List<Tradutor.Models.Utilizador>)ViewBag.ListaUtilizadores)
+            {
+                <tr>
+                    <td>@utilizador.Nome</td>
+                    <td>@utilizador.Email</td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = utilizador.Id }, new { @class = "btn btn-sm btn-warning" }) |
+                        @Html.ActionLink("Detalhes", "Details", new { id = utilizador.Id }, new { @class = "btn btn-sm btn-info" }) |
+                        @Html.ActionLink("Excluir", "Delete", new { id = utilizador.Id }, new { @class = "btn btn-sm btn-danger" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Nenhum utilizador cadastrado.</p>
 }
